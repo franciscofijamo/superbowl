@@ -17,8 +17,36 @@ head(tab)
 
 # Removendo as duas primeiras linhas que são informação de título e referencia
 tab
-tab <- tab[-(1:2),]
-tab <- tab[-c(1),]
-head(tab)
-names(tab) <- c("number", "date","site", "resultado")
-head(tab)
+dfsbowl <- tab[-(1:2),]
+#tab <- tab[-c(1),]
+head(dfsbowl)
+names(dfsbowl) <- c("number", "date","site", "result")
+head(dfsbowl)
+
+
+#Converter primeira coluna de romanos, para numeros inteiros
+dfsbowl$number <- 1:54
+#Converter data 
+dfsbowl$date <- as.Date(dfsbowl$date, "%B. %d,%Y")
+head(dfsbowl)
+
+
+#Separar coluna 4 em 2, vencedor e perdedor
+dfsbowl <- separate(dfsbowl, result, c('winner', 'loser'), sep = ',')
+head(dfsbowl)
+
+# Regular expression/ encontrar padrao de digitos
+pattern <- "\\d+$"
+#cirar coluna com pontos de winner score
+dfsbowl$winnerScore <- as.numeric(str_extract(dfsbowl$winner, pattern))
+dfsbowl$loserScore <- as.numeric(str_extract(dfsbowl$loser, pattern))
+
+# subistituir os digitos por vazio
+dfsbowl$winner <- gsub(pattern,"", dfsbowl$winner)
+dfsbowl$loser <- gsub(pattern,"", dfsbowl$loser)
+#df <- dfsbowl[-8]
+head(df)
+
+#Gravr o resultado no arquivo csv
+write.csv(df, 'superbowl.csv', row.names = F)
+dir()
